@@ -31,30 +31,22 @@ function pickResolvedPath(configPath, inputPath) {
     return configPath
   }
 
-  let paths = [
-    path.resolve(configPath),
-  ]
-
   if (inputPath) {
-    paths.push(path.resolve(inputPath, configPath))
+    try {
+      // Use require.resolve so we can find config file in parent directories
+      let resolvedPath = require.resolve(configPath, {
+        paths: [inputPath],
+      })
+
+      let maybeConfig = require(resolvedPath)
+
+      if (typeof maybeConfig === 'object' && flagEnabled(maybeConfig, 'resolveConfigRelativeToInput')) {
+        return resolvedPath
+      }
+    } catch (e) {}
   }
 
-  for (const path of paths) {
-    // TODO: If we ever add support for ESM configs this will have to change
-    let maybeConfig = (() => {
-      try { return require(path) } catch (err) {}
-    })()
-
-    if (typeof maybeConfig !== 'object') {
-      continue
-    }
-
-    if (flagEnabled(maybeConfig, 'resolveConfigRelativeToInput')) {
-      return path
-    }
-  }
-
-  return paths[0]
+  return path.resolve(configPath)
 }
 
 export default function resolveConfigPath(pathOrConfig, inputPath) {
