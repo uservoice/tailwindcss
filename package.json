@@ -15,7 +15,7 @@
   "scripts": {
     "preswcify": "npm run generate && rimraf lib",
     "swcify": "swc src --out-dir lib --copy-files",
-    "postswcify": "esbuild lib/cli-peer-dependencies.js --bundle --platform=node --outfile=peers/index.js",
+    "postswcify": "esbuild lib/cli-peer-dependencies.js --bundle --platform=node --outfile=peers/index.js --define:process.env.CSS_TRANSFORMER_WASM=false",
     "rebuild-fixtures": "npm run swcify && node -r @swc/register scripts/rebuildFixtures.js",
     "prepublishOnly": "npm install --force && npm run swcify",
     "style": "eslint .",
@@ -42,12 +42,12 @@
     "*.js"
   ],
   "devDependencies": {
+    "@parcel/css": "^1.11.2",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.196",
     "@swc/jest": "^0.2.21",
     "@swc/register": "^0.1.10",
     "autoprefixer": "^10.4.7",
-    "cssnano": "^5.1.12",
     "esbuild": "^0.14.48",
     "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
@@ -76,7 +76,7 @@
     "normalize-path": "^3.0.0",
     "object-hash": "^3.0.0",
     "picocolors": "^1.0.0",
-    "postcss": "^8.4.14",
+    "postcss": "^8.0.9",
     "postcss-import": "^14.1.0",
     "postcss-js": "^4.0.0",
     "postcss-load-config": "^3.1.4",
