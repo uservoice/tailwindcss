@@ -1,6 +1,7 @@
 import isGlob from 'is-glob'
 import globParent from 'glob-parent'
 import path from 'path'
+import { flagEnabled } from '../featureFlags'
 
 // Based on `glob-base`
 // https://github.com/micromatch/glob-base/blob/master/index.js
@@ -25,18 +26,22 @@ function parseGlob(pattern) {
   return { base, glob }
 }
 
-export default function parseDependency(normalizedFileOrGlob) {
+export default function parseDependency(normalizedFileOrGlob, context) {
   if (normalizedFileOrGlob.startsWith('!')) {
     return null
   }
 
   let message
 
+  let resolveFrom = flagEnabled(context.tailwindConfig, 'resolveContentRelativeToConfig')
+    ? [context.userConfigPath ?? process.cwd()]
+    : [process.cwd()]
+
   if (isGlob(normalizedFileOrGlob)) {
     let { base, glob } = parseGlob(normalizedFileOrGlob)
-    message = { type: 'dir-dependency', dir: path.resolve(base), glob }
+    message = { type: 'dir-dependency', dir: path.resolve(...resolveFrom, base), glob }
   } else {
-    message = { type: 'dependency', file: path.resolve(normalizedFileOrGlob) }
+    message = { type: 'dependency', file: path.resolve(...resolveFrom, normalizedFileOrGlob) }
   }
 
   // rollup-plugin-postcss does not support dir-dependency messages
