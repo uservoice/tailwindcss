@@ -380,13 +380,13 @@ function processApply(root, context, localCache, result) {
     let rules = Array.from(new Set(matchedRules.map((rule) => rule[1])))
 
     if (rules.length > 1) {
-      return '@apply does not support matching multiple rules'
+      return 'Deprecation: @apply will not support matching multiple rules'
     }
 
     let ast = extractSelectors(rules[0].selector)
 
     if (ast.length > 1) {
-      return '@apply does not support matching rules with multiple selectors'
+      return 'Deprecation: @apply will not support matching rules with multiple selectors'
     }
 
     let classCount = 0
@@ -395,7 +395,7 @@ function processApply(root, context, localCache, result) {
     })
 
     if (classCount > 1) {
-      return '@apply does not support matching rules with multiple classes (before variants are applied)'
+      return 'Deprecation: @apply will not support matching rules with multiple classes (before variants are applied)'
     }
 
     let hasMultipleSimpleSelectors = false
@@ -404,7 +404,7 @@ function processApply(root, context, localCache, result) {
     })
 
     if (hasMultipleSimpleSelectors) {
-      return '@apply does not support matching rules with multiple selectors'
+      return 'Deprecation: @apply will not support matching rules with multiple selectors'
     }
   }
 
