@@ -379,6 +379,10 @@ function processApply(root, context, localCache, result) {
     // We want the error message to be more specific so we remove duplicates
     let rules = Array.from(new Set(matchedRules.map((rule) => rule[1])))
 
+    if (rules.length === 0) {
+      return
+    }
+
     if (rules.length > 1) {
       return 'Deprecation: @apply will not support matching multiple rules'
     }
